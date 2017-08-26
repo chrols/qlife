@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Os")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 set(HEADER_FILES
     MainWindow.h
@@ -24,9 +25,12 @@ set(SOURCE_FILES
     main.cpp
     )
 
+set(RESOURCES
+    Shaders.qrc)
+
 set(SHADERS
-    Shaders/FragmentShader.fsh
-    Shaders/VertexShader.vsh
+    FragmentShader.fsh
+    VertexShader.vsh
     )
 
 find_package(OpenGL REQUIRED)
@@ -36,7 +40,7 @@ link_libraries(${OPENGL_LIBRARIES})
 find_package(Qt5Widgets REQUIRED)
 
 # SHADERS only used so that they will appear in QtCreator
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${SHADERS})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${SHADERS} ${RESOURCES})
 target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${OPENGL_LIBRARY})
 
 find_package( OpenMP )
@@ -47,8 +51,3 @@ if(OPENMP_FOUND)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
-add_custom_target(copy_shaders ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_SOURCE_DIR}/Shaders" "$<TARGET_FILE_DIR:QLife>/Shaders"
-    COMMENT "Copy shaders to build tree"
-    VERBATIM)

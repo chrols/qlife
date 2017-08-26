@@ -31,9 +31,9 @@ LifeWidget::~LifeWidget() {
 void LifeWidget::initializeGL() {
     m_program = new QOpenGLShaderProgram(this);
     m_program->addShaderFromSourceFile(QOpenGLShader::Vertex,
-                                       "Shaders/VertexShader.vsh");
+                                       ":shaders/VertexShader.vsh");
     m_program->addShaderFromSourceFile(QOpenGLShader::Fragment,
-                                       "Shaders/FragmentShader.fsh");
+                                       ":shaders/FragmentShader.fsh");
     m_program->link();
     m_posAttr = m_program->attributeLocation("posAttr");
     m_colAttr = m_program->attributeLocation("colAttr");
