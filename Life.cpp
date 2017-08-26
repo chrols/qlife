@@ -138,21 +138,6 @@ void Life::setRules(int minAlive, int maxAlive, int minBirth, int maxBirth) {
     m_maxBirth = maxBirth;
 }
 
-uint32_t Life::value(int x, int y, int z) const {
-    if (!alive(x, y, z)) return 0;
-
-    switch (neighbours(x, y, z)) {
-        case 0:
-        case 1:
-            return 0x000000FF;
-        case 2:
-        case 3:
-            return 0x00FFFFFF;
-        default:
-            return 0x00FF0000;
-    }
-}
-
 int Life::_pos(int x, int y, int z) const {
     return (z * (m_width * m_height) + y * m_width + x);
 }

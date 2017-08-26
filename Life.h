@@ -26,7 +26,6 @@ public:
     // 4555 3D alternative 1
     // 5766 3D alternative 2
     void setRules(int minAlive, int maxAlive, int minBirth, int maxBirth);
-    uint32_t value(int x, int y, int z) const;
     bool wrap() const;
     void setWrap(bool wrap);
 public slots:
