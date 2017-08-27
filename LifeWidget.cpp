@@ -7,7 +7,12 @@
 
 #include <QtCore/qmath.h>
 
-LifeWidget::LifeWidget() : m_frame(0) {
+#define CAMERA_SPEED (0.5f)
+
+LifeWidget::LifeWidget() :
+      m_frame(0),
+      m_cameraAngle(0.0f),
+      m_cameraRunning(true) {
     m_life.resize(30, 30, 30);
     m_life.setRules(5, 7, 6, 6);
     m_life.setWrap(false);
@@ -15,17 +20,23 @@ LifeWidget::LifeWidget() : m_frame(0) {
     m_life.moveToThread(&m_workerThread);
 
     connect(&m_workerThread, &QThread::finished, &m_life, &Life::deleteLater);
+    connect(this, &LifeWidget::stepSimulation, &m_life, &Life::step);
 
-    connect(this, &LifeWidget::newStepRequest, &m_life, &Life::step);
+    connect(this, &LifeWidget::restartSimulation, &m_life, &Life::restart);
+    connect(this, &LifeWidget::startStopSimulation, &m_life, &Life::startStop);
 
     m_workerThread.start();
 
-    emit newStepRequest();
+    emit stepSimulation();
 }
 
 LifeWidget::~LifeWidget() {
     m_workerThread.quit();
     m_workerThread.wait();
+}
+
+void LifeWidget::startStopCamera() {
+    m_cameraRunning = !m_cameraRunning;
 }
 
 void LifeWidget::initializeGL() {
@@ -57,12 +68,17 @@ void LifeWidget::paintGL() {
 
     float viewRadius = 3.0f;
 
-    float deg = float((m_frame / 2) % 360);
+    float deg = m_cameraAngle;
+
     float rad = deg * float(2.0f * M_PI / 360.f);
     float cellSize = float(3.0f / m_life.width());
     float xOffset = float(cellSize * m_life.width() / 2);
     float yOffset = float(cellSize * m_life.height() / 2);
     float zOffset = float(cellSize * m_life.depth() / 2);
+
+    if (m_cameraRunning) {
+        m_cameraAngle = std::fmod(m_cameraAngle + CAMERA_SPEED, 360.0f);
+    }
 
     for (int y = 0; y < m_life.height(); y++) {
         for (int x = 0; x < m_life.width(); x++) {
@@ -136,7 +152,7 @@ void LifeWidget::paintGL() {
     m_frame++;
 
     if (m_frame % 10 == 0) {
-        emit newStepRequest();
+        emit stepSimulation();
     }
 
     update();

@@ -11,6 +11,7 @@ Life::Life()
       m_maxAlive(3),
       m_minBirth(3),
       m_maxBirth(3),
+      m_running(true),
       m_wrap(false),
       m_useFirst(true) {}
 
@@ -83,7 +84,19 @@ void Life::randomize() {
     }
 }
 
+void Life::restart() {
+    randomize();
+}
+
+void Life::startStop() {
+    m_running = !m_running;
+}
+
 void Life::step() {
+    if (!m_running) {
+        return;
+    }
+
 #pragma omp parallell for collapse(3)
     for (int z = 0; z < m_depth; z++) {
         for (int y = 0; y < m_height; y++) {

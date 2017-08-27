@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 
+#include <QAction>
 #include <QDockWidget>
 
 #include "LifeWidget.h"
@@ -13,5 +14,13 @@ public:
     virtual ~MainWindow();
 
 private:
+    void _setupActions();
+    void _setupMenuBar();
+
+    QAction *m_exitSimulation;
+    QAction *m_restartSimulation;
+    QAction *m_startStopSimulation;
+    QAction *m_startStopCamera;
+
     LifeWidget m_lifeWidget;
 };

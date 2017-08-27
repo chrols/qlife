@@ -11,8 +11,12 @@ class LifeWidget : public QOpenGLWidget {
 public:
     explicit LifeWidget();
     virtual ~LifeWidget();
+public slots:
+    void startStopCamera();
 signals:
-    void newStepRequest();
+    void restartSimulation();
+    void startStopSimulation();
+    void stepSimulation();
 
 protected:
     // QOpengGLWidget interface
@@ -30,6 +34,10 @@ private:
 
     QOpenGLShaderProgram *m_program;
     int m_frame;
+
+    float m_cameraAngle;
+
+    bool m_cameraRunning;
 
     Life m_life;
 };

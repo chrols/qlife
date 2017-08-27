@@ -29,6 +29,8 @@ public:
     bool wrap() const;
     void setWrap(bool wrap);
 public slots:
+    void restart();
+    void startStop();
     void step();
 signals:
     void stepReady();
@@ -45,6 +47,7 @@ private:
     int m_minBirth;
     int m_maxBirth;
 
+    bool m_running;
     bool m_wrap;
     bool m_useFirst;
     std::vector<bool> m_first;
