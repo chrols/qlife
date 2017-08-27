@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <QSettings>
 
 class Life : public QObject {
     Q_OBJECT
@@ -28,6 +29,8 @@ public:
     void setRules(int minAlive, int maxAlive, int minBirth, int maxBirth);
     bool wrap() const;
     void setWrap(bool wrap);
+
+    void readSettings();
 public slots:
     void onNewWidth(int width);
     void onNewHeight(int height);
@@ -60,4 +63,6 @@ private:
     bool m_useFirst;
     std::vector<bool> m_first;
     std::vector<bool> m_second;
+
+    QSettings m_settings;
 };

@@ -4,6 +4,7 @@
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QScreen>
+#include <QSettings>
 
 #include <QtCore/qmath.h>
 
@@ -26,9 +27,11 @@ LifeWidget::LifeWidget()
       m_cameraAngle(0.0f),
       m_cameraRunning(true) {
 
+    QSettings settings;
+
+
     m_life = new Life();
-    m_life->resize(30, 30, 30);
-    m_life->setRules(5, 7, 6, 6);
+    m_life->readSettings();
     m_life->setWrap(false);
 
     m_life->moveToThread(&m_workerThread);

@@ -3,10 +3,13 @@
 #include <QAction>
 #include <QGridLayout>
 #include <QSpinBox>
+#include <QSettings>
 
 LifeDockWidget::LifeDockWidget(QWidget *parent)
  : QWidget(parent)
 {
+    QSettings settings;
+
     m_layout = new QVBoxLayout(this);
 
     m_ruleLayout = new QGridLayout();
@@ -27,9 +30,9 @@ LifeDockWidget::LifeDockWidget(QWidget *parent)
     m_depthSpinner = new QSpinBox(this);
     m_depthSpinner->setMinimum(1);
 
-    m_widthSpinner->setValue(30);
-    m_heightSpinner->setValue(30);
-    m_depthSpinner->setValue(1);
+    m_widthSpinner->setValue(settings.value("sim/width", 30).toInt());
+    m_heightSpinner->setValue(settings.value("sim/height", 30).toInt());
+    m_depthSpinner->setValue(settings.value("sim/depth", 30).toInt());
 
     m_minAliveSpinner = new QSpinBox(this);
     m_minAliveSpinner->setMinimum(1);
@@ -41,10 +44,10 @@ LifeDockWidget::LifeDockWidget(QWidget *parent)
     m_maxBirthSpinner = new QSpinBox(this);
     m_maxBirthSpinner->setMinimum(1);
 
-    m_minAliveSpinner->setValue(2);
-    m_maxAliveSpinner->setValue(3);
-    m_minBirthSpinner->setValue(3);
-    m_maxBirthSpinner->setValue(3);
+    m_minAliveSpinner->setValue(settings.value("sim/min_alive", 5).toInt());
+    m_maxAliveSpinner->setValue(settings.value("sim/max_alive", 7).toInt());
+    m_minBirthSpinner->setValue(settings.value("sim/min_birth", 6).toInt());
+    m_maxBirthSpinner->setValue(settings.value("sim/max_birth", 6).toInt());
 
     m_ruleLayout->addWidget(m_widthLabel, 0, 0);
     m_ruleLayout->addWidget(m_heightLabel, 1, 0);

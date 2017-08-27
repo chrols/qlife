@@ -13,7 +13,8 @@ Life::Life()
       m_maxBirth(3),
       m_running(true),
       m_wrap(false),
-      m_useFirst(true) {}
+      m_useFirst(true) {
+}
 
 Life::Life(int width, int height, int depth)
     : m_width(width), m_height(height), m_depth(depth), m_useFirst(true) {
@@ -142,6 +143,11 @@ void Life::resize(int width, int height, int depth) {
     m_width = width;
     m_height = height;
     m_depth = depth;
+
+    m_settings.setValue("sim/width", m_width);
+    m_settings.setValue("sim/height", m_height);
+    m_settings.setValue("sim/depth", m_depth);
+
     randomize();
 }
 
@@ -150,6 +156,12 @@ void Life::setRules(int minAlive, int maxAlive, int minBirth, int maxBirth) {
     m_maxAlive = maxAlive;
     m_minBirth = minBirth;
     m_maxBirth = maxBirth;
+    m_settings.setValue("sim/min_alive", m_minAlive);
+    m_settings.setValue("sim/max_alive", m_maxAlive);
+    m_settings.setValue("sim/min_birth", m_minBirth);
+    m_settings.setValue("sim/max_birth", m_maxBirth);
+
+    randomize();
 }
 
 int Life::_pos(int x, int y, int z) const {
@@ -162,6 +174,24 @@ bool Life::wrap() const {
 
 void Life::setWrap(bool wrap) {
     m_wrap = wrap;
+}
+
+void Life::readSettings()
+{
+    // FIXME Potentially we can get 0 if the setting data is junk
+
+    int width = m_settings.value("sim/width", 30).toInt();
+    int height = m_settings.value("sim/height", 30).toInt();
+    int depth = m_settings.value("sim/depth", 30).toInt();
+
+    resize(width, height, depth);
+
+    int minAlive = m_settings.value("sim/min_alive", 5).toInt();
+    int maxAlive = m_settings.value("sim/max_alive", 7).toInt();
+    int minBirth = m_settings.value("sim/min_birth", 6).toInt();
+    int maxBirth = m_settings.value("sim/max_birth", 6).toInt();
+
+    setRules(minAlive, maxAlive, minBirth, maxBirth);
 }
 
 void Life::onNewWidth(int width)
