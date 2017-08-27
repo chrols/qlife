@@ -9,7 +9,19 @@
 
 #define CAMERA_SPEED (0.5f)
 
-LifeWidget::LifeWidget() :
+LifeWidget::LifeWidget()
+    : m_cubeVertices(
+          {-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,
+           1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, 1.0f,  -1.0f,
+           1.0f,  -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f,
+           1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f,
+           1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f, 1.0f,  -1.0f, 1.0f,  -1.0f, -1.0f,
+           1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,
+           1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,
+           1.0f,  -1.0f, 1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  1.0f,  1.0f,  -1.0f,
+           1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
+           1.0f,  1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  1.0f,
+           1.0f,  1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,  -1.0f, 1.0f}),
       m_frame(0),
       m_cameraAngle(0.0f),
       m_cameraRunning(true) {
@@ -26,6 +38,8 @@ LifeWidget::LifeWidget() :
     connect(this, &LifeWidget::startStopSimulation, &m_life, &Life::startStop);
 
     m_workerThread.start();
+
+    m_cubeColor.resize(m_cubeVertices.size());
 
     emit stepSimulation();
 }
@@ -80,6 +94,8 @@ void LifeWidget::paintGL() {
         m_cameraAngle = std::fmod(m_cameraAngle + CAMERA_SPEED, 360.0f);
     }
 
+    GLfloat *vertices = m_cubeVertices.data();
+
     for (int y = 0; y < m_life.height(); y++) {
         for (int x = 0; x < m_life.width(); x++) {
             for (int z = 0; z < m_life.depth(); z++) {
@@ -99,36 +115,8 @@ void LifeWidget::paintGL() {
                 m_program->setUniformValue(m_matrixUniform, matrix);
                 m_program->setUniformValue(m_mvpUniform, mvp);
 
-                GLfloat vertices[] = {
-                    -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, 1.0f,
-                    1.0f,  1.0f,  1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, -1.0f,
-                    1.0f,  -1.0f, 1.0f,  -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f,
-                    1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f,
-                    -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f,
-                    1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f, 1.0f,  -1.0f, 1.0f,
-                    -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,
-                    1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, 1.0f,  1.0f,
-                    1.0f,  1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f,
-                    1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  1.0f,  1.0f,  -1.0f,
-                    1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  -1.0f, -1.0f,
-                    1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f,
-                    -1.0f, 1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  -1.0f, 1.0f,
-                    1.0f,  1.0f,  -1.0f, 1.0f};
-
-                GLfloat *colors = new GLfloat[108];
-
-                float r1 = float(x) / float(m_life.width());
-                float g1 = float(y) / float(m_life.height());
-                float b1 = float(z) / float(m_life.depth());
-                float r2 = float(x + 1) / float(m_life.width());
-                float g2 = float(y + 1) / float(m_life.height());
-                float b2 = float(z + 1) / float(m_life.depth());
-
-                for (int i = 0; i < 108; i += 3) {
-                    colors[i] = vertices[i] < 0 ? r1 : r2;
-                    colors[i + 1] = vertices[i + 1] < 0 ? g1 : g2;
-                    colors[i + 2] = vertices[i + 2] < 0 ? b1 : b2;
-                }
+                _updateColor(x, y, z);
+                GLfloat *colors = m_cubeColor.data();
 
                 f->glUniformMatrix4fv(m_mvpUniform, 1, GL_FALSE,
                                       mvp.constData());
@@ -156,4 +144,29 @@ void LifeWidget::paintGL() {
     }
 
     update();
+}
+
+void LifeWidget::_updateColor(int x, int y, int z) {
+    float r1 = float(x) / float(m_life.width());
+    float g1 = float(y) / float(m_life.height());
+    float b1 = float(z) / float(m_life.depth());
+    float r2 = float(x + 1) / float(m_life.width());
+    float g2 = float(y + 1) / float(m_life.height());
+    float b2 = float(z + 1) / float(m_life.depth());
+
+    for (int i = 0; i < m_cubeVertices.size(); i++) {
+        bool negative = m_cubeVertices[i] < 0;
+
+        switch (i % 3) {
+            case 0:
+                m_cubeColor[i] = negative ? r1 : r2;
+                break;
+            case 1:
+                m_cubeColor[i] = negative ? g1 : g2;
+                break;
+            case 2:
+                m_cubeColor[i] = negative ? b1 : b2;
+                break;
+        }
+    }
 }

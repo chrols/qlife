@@ -25,12 +25,17 @@ protected:
     void paintGL() override;
 
 private:
+    void _updateColor(int x, int y, int z);
+
     QThread m_workerThread;
 
     GLuint m_posAttribute;
     GLuint m_colorAttribute;
     GLuint m_matrixUniform;
     GLuint m_mvpUniform;
+
+    QVector<GLfloat> m_cubeVertices;
+    QVector<GLfloat> m_cubeColor;
 
     QOpenGLShaderProgram *m_program;
     int m_frame;
