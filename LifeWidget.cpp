@@ -25,17 +25,19 @@ LifeWidget::LifeWidget()
       m_frame(0),
       m_cameraAngle(0.0f),
       m_cameraRunning(true) {
-    m_life.resize(30, 30, 30);
-    m_life.setRules(5, 7, 6, 6);
-    m_life.setWrap(false);
 
-    m_life.moveToThread(&m_workerThread);
+    m_life = new Life();
+    m_life->resize(30, 30, 30);
+    m_life->setRules(5, 7, 6, 6);
+    m_life->setWrap(false);
 
-    connect(&m_workerThread, &QThread::finished, &m_life, &Life::deleteLater);
-    connect(this, &LifeWidget::stepSimulation, &m_life, &Life::step);
+    m_life->moveToThread(&m_workerThread);
 
-    connect(this, &LifeWidget::restartSimulation, &m_life, &Life::restart);
-    connect(this, &LifeWidget::startStopSimulation, &m_life, &Life::startStop);
+    connect(&m_workerThread, &QThread::finished, m_life, &Life::deleteLater);
+    connect(this, &LifeWidget::stepSimulation, m_life, &Life::step);
+
+    connect(this, &LifeWidget::restartSimulation, m_life, &Life::restart);
+    connect(this, &LifeWidget::startStopSimulation, m_life, &Life::startStop);
 
     m_workerThread.start();
 
@@ -85,10 +87,10 @@ void LifeWidget::paintGL() {
     float deg = m_cameraAngle;
 
     float rad = deg * float(2.0f * M_PI / 360.f);
-    float cellSize = float(3.0f / m_life.width());
-    float xOffset = float(cellSize * m_life.width() / 2);
-    float yOffset = float(cellSize * m_life.height() / 2);
-    float zOffset = float(cellSize * m_life.depth() / 2);
+    float cellSize = float(3.0f / m_life->width());
+    float xOffset = float(cellSize * m_life->width() / 2);
+    float yOffset = float(cellSize * m_life->height() / 2);
+    float zOffset = float(cellSize * m_life->depth() / 2);
 
     if (m_cameraRunning) {
         m_cameraAngle = std::fmod(m_cameraAngle + CAMERA_SPEED, 360.0f);
@@ -96,10 +98,10 @@ void LifeWidget::paintGL() {
 
     GLfloat *vertices = m_cubeVertices.data();
 
-    for (int y = 0; y < m_life.height(); y++) {
-        for (int x = 0; x < m_life.width(); x++) {
-            for (int z = 0; z < m_life.depth(); z++) {
-                if (!m_life.alive(x, y, z)) continue;
+    for (int y = 0; y < m_life->height(); y++) {
+        for (int x = 0; x < m_life->width(); x++) {
+            for (int z = 0; z < m_life->depth(); z++) {
+                if (!m_life->alive(x, y, z)) continue;
 
                 QMatrix4x4 matrix;
                 matrix.translate(cellSize * x - xOffset, cellSize * y - yOffset,
@@ -147,12 +149,12 @@ void LifeWidget::paintGL() {
 }
 
 void LifeWidget::_updateColor(int x, int y, int z) {
-    float r1 = float(x) / float(m_life.width());
-    float g1 = float(y) / float(m_life.height());
-    float b1 = float(z) / float(m_life.depth());
-    float r2 = float(x + 1) / float(m_life.width());
-    float g2 = float(y + 1) / float(m_life.height());
-    float b2 = float(z + 1) / float(m_life.depth());
+    float r1 = float(x) / float(m_life->width());
+    float g1 = float(y) / float(m_life->height());
+    float b1 = float(z) / float(m_life->depth());
+    float r2 = float(x + 1) / float(m_life->width());
+    float g2 = float(y + 1) / float(m_life->height());
+    float b2 = float(z + 1) / float(m_life->depth());
 
     for (int i = 0; i < m_cubeVertices.size(); i++) {
         bool negative = m_cubeVertices[i] < 0;

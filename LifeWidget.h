@@ -44,5 +44,5 @@ private:
 
     bool m_cameraRunning;
 
-    Life m_life;
+    Life *m_life;
 };
