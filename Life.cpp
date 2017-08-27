@@ -163,3 +163,45 @@ bool Life::wrap() const {
 void Life::setWrap(bool wrap) {
     m_wrap = wrap;
 }
+
+void Life::onNewWidth(int width)
+{
+    resize(width, m_height, m_depth);
+    restart();
+}
+
+void Life::onNewHeight(int height)
+{
+    resize(m_width, height, m_depth);
+    restart();
+}
+
+void Life::onNewDepth(int depth)
+{
+    resize(m_width, m_height, depth);
+    restart();
+}
+
+void Life::onNewMinAlive(int minAlive)
+{
+    setRules(minAlive, m_maxAlive, m_minBirth, m_maxBirth);
+    restart();
+}
+
+void Life::onNewMaxAlive(int maxAlive)
+{
+    setRules(m_minAlive, maxAlive, m_minBirth, m_maxBirth);
+    restart();
+}
+
+void Life::onNewMinBirth(int minBirth)
+{
+    setRules(m_minAlive, m_maxAlive, minBirth, m_maxBirth);
+    restart();
+}
+
+void Life::onNewMaxBirth(int maxBirth)
+{
+    setRules(m_minAlive, m_maxAlive, m_minBirth, maxBirth);
+    restart();
+}

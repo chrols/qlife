@@ -15,6 +15,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setCentralWidget(&m_lifeWidget);    
+    _setupDock();
     _setupActions();
     _setupMenuBar();
 }
@@ -41,6 +42,34 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     m_settings.setValue("window/size", size);
 }
 
+void MainWindow::_setupDock()
+{
+    LifeDockWidget *ldw = new LifeDockWidget(this);
+    m_dockWidget.setWidget(ldw);
+    m_dockWidget.setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+
+    // FIXME Not the best way to do things
+    Life *life = m_lifeWidget.life();
+
+    connect(ldw, &LifeDockWidget::newWidth,
+            life, &Life::onNewWidth);
+    connect(ldw, &LifeDockWidget::newHeight,
+            life, &Life::onNewHeight);
+    connect(ldw, &LifeDockWidget::newDepth,
+            life, &Life::onNewDepth);
+
+    connect(ldw, &LifeDockWidget::newMinAlive,
+            life, &Life::onNewMinAlive);
+    connect(ldw, &LifeDockWidget::newMaxAlive,
+            life, &Life::onNewMaxAlive);
+    connect(ldw, &LifeDockWidget::newMinBirth,
+            life, &Life::onNewMinBirth);
+    connect(ldw, &LifeDockWidget::newMaxBirth,
+            life, &Life::onNewMaxBirth);
+
+    addDockWidget(Qt::RightDockWidgetArea, &m_dockWidget);
+}
+
 void MainWindow::_setupActions() {
     m_exitSimulation = new QAction(this);
     m_exitSimulation->setText("E&xit");
@@ -65,6 +94,11 @@ void MainWindow::_setupActions() {
     m_startStopCamera->setToolTip("Start/stop camera");
     connect(m_startStopCamera, &QAction::triggered, &m_lifeWidget,
             &LifeWidget::startStopCamera);
+
+    m_showHideDock = new QAction(this);
+    m_showHideDock->setText("Show/hide &Dock");
+    m_showHideDock->setToolTip("Show/hide the dock menu");
+    connect(m_showHideDock, &QAction::triggered, this, &MainWindow::_showHideDock);
 }
 
 void MainWindow::_setupMenuBar() {
@@ -73,4 +107,10 @@ void MainWindow::_setupMenuBar() {
     menu->addAction(m_startStopSimulation);
     menu->addAction(m_restartSimulation);
     menu->addAction(m_startStopCamera);
+    menu->addAction(m_showHideDock);
+}
+
+void MainWindow::_showHideDock()
+{
+    m_dockWidget.isHidden() ? m_dockWidget.show() : m_dockWidget.hide();
 }

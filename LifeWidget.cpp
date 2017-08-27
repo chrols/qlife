@@ -51,6 +51,11 @@ LifeWidget::~LifeWidget() {
     m_workerThread.wait();
 }
 
+Life *LifeWidget::life()
+{
+    return m_life;
+}
+
 void LifeWidget::startStopCamera() {
     m_cameraRunning = !m_cameraRunning;
 }

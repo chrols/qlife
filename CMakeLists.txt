@@ -16,12 +16,14 @@ set(HEADER_FILES
     MainWindow.h
     Life.h
     LifeWidget.h
+    LifeDockWidget.h
     )
 
 set(SOURCE_FILES
     MainWindow.cpp
     Life.cpp
     LifeWidget.cpp
+    LifeDockWidget.cpp
     main.cpp
     )
 

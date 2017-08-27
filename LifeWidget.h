@@ -11,6 +11,8 @@ class LifeWidget : public QOpenGLWidget {
 public:
     explicit LifeWidget();
     virtual ~LifeWidget();
+
+    Life *life();
 public slots:
     void startStopCamera();
 signals:

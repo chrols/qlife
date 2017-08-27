@@ -29,6 +29,14 @@ public:
     bool wrap() const;
     void setWrap(bool wrap);
 public slots:
+    void onNewWidth(int width);
+    void onNewHeight(int height);
+    void onNewDepth(int depth);
+    void onNewMinAlive(int minAlive);
+    void onNewMaxAlive(int maxAlive);
+    void onNewMinBirth(int minBirth);
+    void onNewMaxBirth(int maxBirth);
+
     void restart();
     void startStop();
     void step();
