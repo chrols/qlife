@@ -7,16 +7,39 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QToolBar>
+#include <QDesktopWidget>
+#include <QResizeEvent>
+#include <QSettings>
 
 #include "Life.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-    setCentralWidget(&m_lifeWidget);
+    setCentralWidget(&m_lifeWidget);    
     _setupActions();
     _setupMenuBar();
 }
 
 MainWindow::~MainWindow() {}
+
+QSize MainWindow::sizeHint() const
+{
+    if (m_settings.contains("window/size")) {
+        return m_settings.value("window/size").toSize();
+    } else {
+        QSize size;
+        QDesktopWidget dw;
+        size.setWidth(dw.width() * 0.7);
+        size.setHeight(dw.height() * 0.7);
+        return size;
+    }
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    const QSize size = event->size();
+    m_settings.setValue("window/size", size);
+}
 
 void MainWindow::_setupActions() {
     m_exitSimulation = new QAction(this);
