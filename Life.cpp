@@ -86,6 +86,7 @@ void Life::randomize() {
 
 void Life::restart() {
     randomize();
+    m_running = true;
 }
 
 void Life::startStop() {
