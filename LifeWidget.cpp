@@ -46,8 +46,8 @@ void LifeWidget::initializeGL() {
     m_program->addShaderFromSourceFile(QOpenGLShader::Fragment,
                                        ":shaders/FragmentShader.fsh");
     m_program->link();
-    m_posAttr = m_program->attributeLocation("posAttr");
-    m_colAttr = m_program->attributeLocation("colAttr");
+    m_posAttribute = m_program->attributeLocation("posAttribute");
+    m_colorAttribute = m_program->attributeLocation("colorAttribute");
     m_matrixUniform = m_program->uniformLocation("matrix");
     m_mvpUniform = m_program->uniformLocation("MVP");
 }
@@ -132,10 +132,10 @@ void LifeWidget::paintGL() {
 
                 f->glUniformMatrix4fv(m_mvpUniform, 1, GL_FALSE,
                                       mvp.constData());
-                f->glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0,
-                                         vertices);
-                f->glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0,
-                                         colors);
+                f->glVertexAttribPointer(m_posAttribute, 3, GL_FLOAT, GL_FALSE,
+                                         0, vertices);
+                f->glVertexAttribPointer(m_colorAttribute, 3, GL_FLOAT,
+                                         GL_FALSE, 0, colors);
 
                 f->glEnableVertexAttribArray(0);
                 f->glEnableVertexAttribArray(1);

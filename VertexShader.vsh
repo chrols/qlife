@@ -1,10 +1,10 @@
-attribute highp vec4 posAttr;
-attribute lowp vec4 colAttr;
-varying lowp vec4 col;
+attribute highp vec4 posAttribute;
+attribute lowp vec4 colorAttribute;
+varying lowp vec4 color;
 uniform highp mat4 matrix;
 uniform highp mat4 MVP;
 
 void main() {
-    col = colAttr;
-    gl_Position = MVP * matrix * posAttr;
+    color = colorAttribute;
+    gl_Position = MVP * matrix * posAttribute;
 }

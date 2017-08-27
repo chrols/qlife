@@ -27,8 +27,8 @@ protected:
 private:
     QThread m_workerThread;
 
-    GLuint m_posAttr;
-    GLuint m_colAttr;
+    GLuint m_posAttribute;
+    GLuint m_colorAttribute;
     GLuint m_matrixUniform;
     GLuint m_mvpUniform;
 
